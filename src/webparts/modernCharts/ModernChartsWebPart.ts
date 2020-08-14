@@ -425,11 +425,7 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
               options: this.properties.chartConfig[_i].lists,
               disabled: this.properties.chartConfig[_i].listsDisabled
             }),
-            PropertyPaneDropdown('chartConfig[' + _i + ']["list"]', {
-              label: 'Select Month',
-              options: this.properties.chartConfig[_i].columns,
-              disabled: this.properties.chartConfig[_i].colsDisabled
-            }),
+           
             PropertyPaneDropdown('chartConfig[' + _i + ']["col1"]', {
               label: 'Label Column',
               options: this.properties.chartConfig[_i].columns,
@@ -498,6 +494,7 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         return response.json();
       });
   }
+ 
  
   public getData(chartConfig: Object) {
     const urlparttax = '&$select=*,TaxCatchAll/Term,TaxCatchAll/ID&$expand=TaxCatchAll';
