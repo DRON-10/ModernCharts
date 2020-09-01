@@ -34,6 +34,8 @@ export interface IModernChartsWebPartProps {
   url: string;
   other: boolean;
   maxResults: number;
+  dropdown:string;
+  quarter:string;
 }
 
 export interface IModernChartsProps {

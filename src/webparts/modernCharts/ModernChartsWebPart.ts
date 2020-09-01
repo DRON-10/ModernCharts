@@ -21,6 +21,9 @@ import {
   SPHttpClient,
   SPHttpClientResponse
 } from '@microsoft/sp-http';
+import { PropertyFieldDateTimePicker, DateConvention, TimeConvention } from '@pnp/spfx-property-controls/lib/PropertyFieldDateTimePicker';
+ 
+import "react-datepicker/dist/react-datepicker.css";
 
 export interface ISPLists {
   value: ISPList[];
@@ -376,6 +379,23 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
             min: 1,
             max: 10
           }),
+          PropertyPaneDropdown('dropdown', {
+            label:'Status',
+            options: [
+              { key: 'Submitted', text: 'Submitted' },
+              { key: 'Approved', text: 'Approved' },
+              { key: 'Publish', text: 'Publish' }
+            ]
+          }),
+          PropertyPaneDropdown('quarter', {
+            label:'Quarter',
+            options: [
+              { key: 'Q1', text: 'Quarter 1' },
+              { key: 'Q2', text: 'Quarter 2' },
+              { key: 'Q3', text: 'Quarter 3' },
+              {key: 'Q4', text: 'Quarter 4' }
+            ]
+          }),
           PropertyPaneSlider('maxResults', {
             label: 'Max # of list items',
             min: 1,
@@ -498,7 +518,7 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
  
   public getData(chartConfig: Object) {
     const urlparttax = '&$select=*,TaxCatchAll/Term,TaxCatchAll/ID&$expand=TaxCatchAll';
-    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$orderby=Id desc&$limit=10&$top=${this.properties.maxResults}`;
+    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$orderby=Stamp_Name_txt desc&$limit=10&$top=${this.properties.maxResults}&$filter=Status eq '${this.properties.dropdown}' and Get_Quarter_txt eq '${this.properties.quarter}'`;
     let requesturl = chartConfig['dataurl'] + resturl;
 
     if (!!chartConfig['hasTaxField']) {

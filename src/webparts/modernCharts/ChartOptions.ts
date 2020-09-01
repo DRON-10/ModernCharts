@@ -19,16 +19,19 @@ export default class ChartOptions {
                 layout: {
                     padding: 5
                 },
+                
                 position: 'bottom',
                 labels: {
                     fontColor: 'rgba(100, 100, 100, 1.0)'
                 },
                 scales: {
                     yAxes: [{
+                        
                         ticks: {
                             beginAtZero: true
                         }
                     }]
+                    
                 }
             }
         };

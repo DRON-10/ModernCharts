@@ -13,6 +13,7 @@
   },
   "externals": {},
   "localizedResources": {
-    "ModernChartsWebPartStrings": "lib/webparts/modernCharts/loc/{locale}.js"
+    "ModernChartsWebPartStrings": "lib/webparts/modernCharts/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

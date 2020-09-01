@@ -26,10 +26,9 @@ export default class ModernCharts extends React.Component<IModernChartsProps, {}
       return (
         <DocumentCard onClickHref='#' className={styles.docContainer + ' ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg' + chart.config.size} key={chart.key}>
           <div className={styles.chartCard}>
-            {this.chart(ChartOptions.Data(chart), ChartOptions.Options(), chart.config.type)}
+            {this.chart(ChartOptions.Data(chart), ChartOptions.Options(), chart.config.type) }
           </div>
-          <DocumentCardLocation location={chart.config.description} />
-          <DocumentCardTitle title={chart.config.title} />
+          
         </DocumentCard>
       );
     });
@@ -55,12 +54,13 @@ export default class ModernCharts extends React.Component<IModernChartsProps, {}
         debugger;
         return  <Line data={data} options={options} legend={{ display: false }} />;
       case 'pie':
-        tChart = <Pie data={data} options={options} />;
+        tChart = <Pie data={data} options={options} />; 
         return tChart;
       case 'bar':
-        tChart = <Bar data={data} options={options} legend={{ display: false }} />;
+        tChart = <Bar data={data} options={options} legend={{ display: false }}
+       />;
         return tChart;
-      case 'horizontalbar':
+      case 'horizontalbar': 
         tChart = <HorizontalBar data={data} options={options} legend={{ display: false }} />;
         return tChart;
       case 'radar':
