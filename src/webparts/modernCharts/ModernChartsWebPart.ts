@@ -387,6 +387,15 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
               { key: 'Publish', text: 'Publish' }
             ]
           }),
+          PropertyPaneDropdown('year', {
+            label:'Year',
+            options: [
+              { key: '2020', text: '2020' },
+              { key: '2021', text: '2021' },
+              { key: '2022', text: '2022' },
+              {key: '2023', text: '2023' }
+            ]
+          }),
           PropertyPaneDropdown('quarter', {
             label:'Quarter',
             options: [
@@ -518,7 +527,7 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
  
   public getData(chartConfig: Object) {
     const urlparttax = '&$select=*,TaxCatchAll/Term,TaxCatchAll/ID&$expand=TaxCatchAll';
-    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$orderby=Stamp_Name_txt desc&$limit=10&$top=${this.properties.maxResults}&$filter=Status eq '${this.properties.dropdown}' and Get_Quarter_txt eq '${this.properties.quarter}'`;
+    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$orderby=Stamp_Name_txt desc&$limit=10&$top=${this.properties.maxResults}&$filter=Status eq '${this.properties.dropdown}' and Year eq '${this.properties.year}' and Get_Quarter_txt eq '${this.properties.quarter}'`;
     let requesturl = chartConfig['dataurl'] + resturl;
 
     if (!!chartConfig['hasTaxField']) {
