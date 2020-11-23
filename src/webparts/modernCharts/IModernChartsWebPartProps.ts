@@ -37,6 +37,7 @@ export interface IModernChartsWebPartProps {
   dropdown:string;
   quarter:string;
   year:string;
+  maxrep: number;
 }
 
 export interface IModernChartsProps {

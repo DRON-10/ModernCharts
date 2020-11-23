@@ -21,9 +21,6 @@ import {
   SPHttpClient,
   SPHttpClientResponse
 } from '@microsoft/sp-http';
-import { PropertyFieldDateTimePicker, DateConvention, TimeConvention } from '@pnp/spfx-property-controls/lib/PropertyFieldDateTimePicker';
- 
-import "react-datepicker/dist/react-datepicker.css";
 
 export interface ISPLists {
   value: ISPList[];
@@ -146,6 +143,8 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
       if (cfg.list != null) {
         this.getData(cfg).then((response) => {
           const chart = this.calculateData(response.value, cfg);
+          //console.log(":::::::");
+        //  console.log(chart);
           const _chart: MChart = { data: chart['data'], labels: chart['labels'], config: cfg, key: i };
           _chartData[i] = _chart;
           if (++_count == this.properties.chartConfig.length) { this.getCharts(_chartData); }
@@ -174,12 +173,25 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
 
   private calculateData(data: Array<Object>, config: ChartConfiguration): Object {
     var values: Array<number> = [];
+    var username: Array<String> = [];
     var labels: Object = this.getUnique(data, config);
     var dataVal: Array<Array<any>> = this.getValues(data, labels['unique'], config);
 
+    //console.log(dataVal);
+    function compare (a,b)
+    {
+      return b.length - a.length;
+
+    }
+   dataVal.sort(compare);
+    var newArray = dataVal.slice(0,5);
+    
+  // console.log(newArray);
+    /*console.log("***********");
+    console.log(labels);*/
     switch (config.act) {
       case 'sum':
-        dataVal.forEach((vals, i) => {
+        newArray.forEach((vals, i) => {
           values[i] = 0;
           vals.forEach((val) => {
             values[i] += parseFloat(val);
@@ -187,7 +199,7 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         });
         break;
       case 'average':
-        dataVal.forEach((vals, i) => {
+        newArray.forEach((vals, i) => {
           values[i] = 0;
           vals.forEach((val) => {
             values[i] += parseFloat(val);
@@ -198,19 +210,25 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         });
         break;
       case 'count':
-        dataVal.forEach((vals) => {
+        newArray.forEach((vals) => {
           values.push(vals.length);
+          username.push(vals[0]);
+          //console.log("vals");
+          //console.log(username);
         });
         break;
       default:
         values = [100, 250, 90, 300];
         break;
     }
-    return { data: values, labels: labels['labels'] };
+   // console.log("Labels");
+    //console.log(typeof(values));
+    return { data: values, labels: username };
   }
 
   private getUnique(data: Array<Object>, config: ChartConfiguration): Object {
     const chLabels: Object = { unique: [], labels: [] };
+    
     data.forEach((item) => {
       if (chLabels['unique'].indexOf(item[config.unique]) == -1 && item[config.unique] != null && item[config.unique] != "") {
         chLabels['unique'].push(item[config.unique]);
@@ -218,7 +236,10 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         chLabels['labels'].push(this.getLabel(item, config.col1));
       }
     });
+    //console.log("^^^^^");
+    //console.log(chLabels);
     return chLabels;
+    
   }
 
   private getLabel(item: Object, col: string) {
@@ -230,10 +251,13 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         return terms[0].Term;
       }
       return 'TermLabel not Found';
+      
     }
     //TODO HyperLink
     //lookup user
-
+   
+//console.log("@@@@@@@@@@@");
+//console.log(item[col]);
     return item[col];
   }
 
@@ -250,6 +274,9 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         }
       });
     });
+    
+  //console.log("++++++");
+   //console.log( vals);
     return vals;
   }
 
@@ -476,7 +503,9 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
               disabled: this.properties.chartConfig[_i].colsDisabled
             })
           ]
+          
         });
+        
     }
 
     return {
@@ -489,11 +518,13 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
         }
       ]
     };
+    
   }
 
   protected onPropertyPaneConfigurationComplete() {
     this.render();
   }
+  
 
   private _getSiteRootWeb(): Promise<string[]> {
 
@@ -527,11 +558,12 @@ export default class ModernChartsWebPart extends BaseClientSideWebPart<IModernCh
  
   public getData(chartConfig: Object) {
     const urlparttax = '&$select=*,TaxCatchAll/Term,TaxCatchAll/ID&$expand=TaxCatchAll';
-    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$orderby=Stamp_Name_txt desc&$limit=10&$top=${this.properties.maxResults}&$filter=Status eq '${this.properties.dropdown}' and Year eq '${this.properties.year}' and Get_Quarter_txt eq '${this.properties.quarter}'`;
+    const resturl = `/_api/web/lists/GetByTitle(\'${chartConfig['list']}\')/items?$top=${this.properties.maxResults}&$orderby=Stamp_Name_txt desc&$limit=10&$filter=Status eq '${this.properties.dropdown}' and Year eq '${this.properties.year}' and Get_Quarter_txt eq '${this.properties.quarter}'`;
+
     let requesturl = chartConfig['dataurl'] + resturl;
 
     if (!!chartConfig['hasTaxField']) {
-      requesturl = requesturl + urlparttax;
+      requesturl = requesturl + urlparttax ;
     }
     return this.context.spHttpClient.get(requesturl, SPHttpClient.configurations.v1)
       .then((response: SPHttpClientResponse) => {
